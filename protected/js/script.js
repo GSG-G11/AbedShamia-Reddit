@@ -84,10 +84,18 @@ function postTemplate(post) {
   const dateCreated = document.createElement('span');
   dateCreated.classList.add('date');
   dateCreated.innerText = post.created_at;
-  postedBy.innerHTML = `<img src=${
-    userImg.src
-  }> Post by ${usernameSpan} on ${dateCreated.textContent.slice(0, 10)}`;
 
+  fetch(`/api/v1/posts/${post.id}`)
+    .then(res => res.json())
+    .then(result => {
+      if (result.status === 'success') {
+        usernameSpan.textContent = result.post.username;
+        postedBy.innerHTML = `<img src=${userImg.src}> Post by ${
+          usernameSpan.textContent
+        } on ${dateCreated.textContent.slice(0, 10)}`;
+      }
+    })
+    .catch(err => console.log(err));
   const postTitle = document.createElement('p');
   postTitle.classList.add('post-title');
   postTitle.innerText = post.title;

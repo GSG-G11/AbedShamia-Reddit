@@ -5,6 +5,6 @@ const isUserLoggedIn = require('../middlewares/loggedIn');
 
 router.get('/reddit/login', isUserLoggedIn, getLoginPage);
 
-router.get('/', verifyToken, indexPage);
+router.get('/', indexPage);
 
 module.exports = router;

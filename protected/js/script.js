@@ -31,15 +31,18 @@ closeModalBtn.addEventListener('click', e => {
 
 fetch('/api/v1/posts')
   .then(res => res.json())
-  .then(({posts}) => {
-    posts.forEach(post => postTemplate(post));
-  })
+  .then(({posts}) => posts.map(post => postTemplate(post)))
   .catch(err => console.log(err));
 
 function postTemplate(post) {
   const redditCard = document.createElement('div');
   redditCard.classList.add('card', 'reddit-post');
   postsContainer.appendChild(redditCard);
+
+  const deleteBtn = document.createElement('button');
+  deleteBtn.classList.add('delete-btn');
+  deleteBtn.innerText = 'X';
+  redditCard.appendChild(deleteBtn);
 
   const votesContainer = document.createElement('div');
   votesContainer.classList.add('votes-container');

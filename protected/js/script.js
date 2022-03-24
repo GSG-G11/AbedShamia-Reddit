@@ -29,6 +29,15 @@ closeModalBtn.addEventListener('click', e => {
   modal.classList.remove('show-modal');
 });
 
+// If clicked away from modal, close modal
+document.addEventListener('click', e => {
+  const modal = document.querySelector('.modal-container');
+  if (e.target == modal) {
+    document.querySelector('.container').classList.remove('blur');
+    modal.classList.remove('show-modal');
+  }
+});
+
 fetch('/api/v1/posts')
   .then(res => res.json())
   .then(({posts}) => posts.map(post => postTemplate(post)))
@@ -39,10 +48,29 @@ function postTemplate(post) {
   redditCard.classList.add('card', 'reddit-post');
   postsContainer.appendChild(redditCard);
 
-  const deleteBtn = document.createElement('button');
-  deleteBtn.classList.add('delete-btn');
-  deleteBtn.innerText = 'X';
-  redditCard.appendChild(deleteBtn);
+  fetch('/api/auth/login/user')
+    .then(res => res.json())
+    .then(user => {
+      if (user.user.id === post.user_id) {
+        const deleteBtn = document.createElement('button');
+        deleteBtn.classList.add('delete-btn');
+        deleteBtn.innerText = 'X';
+        redditCard.appendChild(deleteBtn);
+
+        deleteBtn.addEventListener('click', e => {
+          e.preventDefault();
+          fetch(`/api/v1/posts/${post.id}`, {
+            method: 'DELETE',
+          })
+            .then(res => {
+              if (res.status === 204) {
+                redditCard.remove();
+              }
+            })
+            .catch(err => console.log(err));
+        });
+      }
+    });
 
   const votesContainer = document.createElement('div');
   votesContainer.classList.add('votes-container');

@@ -2,7 +2,7 @@ const connection = require('../database/config/connection');
 const {createError} = require('../errors/customError');
 const Joi = require('joi');
 const getAllPosts = async (req, res) => {
-  const posts = await connection.query('SELECT * FROM posts');
+  const posts = await connection.query('SELECT * FROM posts ORDER BY created_at DESC');
 
   if (!posts.rowCount) {
     throw createError('No posts found', 404);

@@ -1,10 +1,29 @@
 const logoutBtn = document.querySelector('.logout-btn');
 const createPostInput = document.querySelector('.create-post');
+const createReddit = document.querySelector('.create-reddit');
 const createPostBtn = document.querySelector('.create-post-btn');
 const closeModalBtn = document.querySelector('.close-btn');
 const postsContainer = document.querySelector('.reddit-posts');
+const profileName = document.querySelector('.profile-name');
+const rightNav = document.querySelector('.right-nav');
 
 const submitBtn = document.querySelector('.submit-btn');
+
+fetch('/api/auth/login/user').then(res => {
+  if (res.status === 401) {
+    logoutBtn.style.display = 'none';
+    createPostBtn.style.display = 'none';
+    createReddit.style.display = 'none';
+    profileName.style.display = 'none';
+    const signUpBtn = document.createElement('button');
+    signUpBtn.innerText = 'Sign Up / Login';
+    signUpBtn.classList.add('logout-btn');
+    signUpBtn.addEventListener('click', e => {
+      window.location.href = '/reddit/login';
+    });
+    rightNav.appendChild(signUpBtn);
+  }
+});
 
 logoutBtn.addEventListener('click', e => {
   fetch('/api/auth/logout', {
@@ -14,7 +33,7 @@ logoutBtn.addEventListener('click', e => {
     .then(result => {
       console.log(result);
       if (result.status) {
-        window.location.href = '/reddit/login';
+        window.location.href = '/';
       }
     })
     .catch(err => console.log(err));

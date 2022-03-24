@@ -9,16 +9,16 @@ const verifyPostId = async (req, res, next) => {
     throw createError('Invalid ID', 400);
   }
 
-  const posts = await connection.query('SELECT COUNT(*) FROM posts');
+  const posts = await connection.query('SELECT MAX(id) AS max_id FROM posts');
 
-  if (+id > +posts.rows[0].count) {
+  if (+id > +posts.rows[0].max_id) {
     throw createError('Post not found', 404);
   }
 
   const post = await connection.query('SELECT id FROM posts WHERE id = $1', [id]);
 
   if (!post.rowCount) {
-    throw createError('Post not found', 404);
+    throw createError('Post Does not exist', 404);
   }
 
   next();

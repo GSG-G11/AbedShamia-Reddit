@@ -4,11 +4,106 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="css/styles.css" />
     <title>reddit</title>
-    <link rel="stylesheet" href="/css/styles.css" />
   </head>
   <body>
-    <h1>Welcome</h1>
-    <button class="logout-btn">Log out</button>
+    <header>
+      <nav>
+        <ul class="nav-list">
+          <div class="left-nav">
+            <li><a><img src="images/logoheader.png" alt=""></a></li>
+            <li><a href="#home"><i class="fas fa-home"></i>Home</a></li>
+          </div>
+          <li><input type="text" placeholder="Search Reddit" name="search" /></li>
+          <div class="right-nav">
+            <li><a class="profile-name" href="/profile">Profile</a></li>
+            <li><button class="logout-btn">Log out</button></li>
+          </div>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <div class="container">
+        <div class="reddit-home">
+          <div class="card create-reddit">
+            <img src="images/userdefault.png" class="profile-pic">
+            <input type="text" placeholder="Create Post" name="post"/>
+          </div>
+          <div class="reddit-posts">
+            <div class="card reddit-post">
+              <div class="votes-container">
+                <button class="vote-up">
+                  <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                </button>
+                <p class="votes">127</p>
+                <button class="vote-down">
+                  <i class="fa fa-arrow-down " aria-hidden="true"></i>
+                </button>
+              </div>
+              <div class="post">
+                <p class="post-by">
+                  <img src="images/userdefault.png">
+                  Post by <span class="username">Username </span><span class="date">6 hrs ago</span></p>
+                <p class="post-title">why cant I touch minions?</p>
+                <p class="post-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime aut iure accusantium voluptas ad nesciunt sequi voluptatibus eligendi ratione, recusandae aperiam quasi facere labore possimus inventore tenetur cupiditate eveniet accusamus!</p>
+                <p>
+                  <i class="fa fa-comment" aria-hidden="true"></i>
+                  <span class="comment">49 Comments</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="side-bar">
+          <div class="communities">
+            <div class="communities-header">
+              <p>Top Sports Communities</p>
+            </div>
+            <div class="communities-content">
+              <div class="community">
+                <p>1</p>
+                <div class="community-name">
+                  <img src="images/userdefault.png">
+                  <p>formula1</p>
+                </div>
+                <a href="#">Join</a>
+              </div>
+              <div class="community">
+                <p>1</p>
+                <div class="community-name">
+                  <img src="images/userdefault.png">
+                  <p>formula1</p>
+                </div>
+                <a href="#">Join</a>
+              </div>
+              <div class="community">
+                <p>1</p>
+                <div class="community-name">
+                  <img src="images/userdefault.png">
+                  <p>formula1</p>
+                </div>
+                <a href="#">Join</a>
+              </div>
+              <div class="community">
+                <p>1</p>
+                <div class="community-name">
+                  <img src="images/userdefault.png">
+                  <p>formula1</p>
+                </div>
+                <a href="#">Join</a>
+              </div>
+              <a href="#" class="btn view-communities">View All</a>
+            </div>
+          </div>
+
+          <div class="cta-reddit">
+            <p><img src="images/sidebar.png">Home</p>
+            <p>Your personal Reddit frontpage. Come here to check in with your favourite communities</p>
+            <button class="btn create-post">Create Post</button>
+          </div>
+        </div>
+      </div>
+    </main>
     <script src="/js/script.js"></script>
 </html>

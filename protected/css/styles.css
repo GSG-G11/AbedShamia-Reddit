@@ -1,0 +1,280 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+body {
+  background-color: #cfdbe0;
+}
+
+header {
+  height: 60px;
+  background-color: white;
+  border-bottom: 1px solid #ccc;
+}
+
+.nav-list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  list-style-type: none;
+  padding: 0.8rem 4.8rem;
+}
+
+.left-nav {
+  display: flex;
+  align-items: center;
+  gap: 3.2rem;
+}
+
+.right-nav {
+  display: flex;
+  align-items: center;
+  gap: 3.2rem;
+}
+
+.fas.fa-home {
+  margin-right: 1rem;
+}
+
+.nav-list img {
+  width: 100px;
+  height: 35px;
+}
+
+.nav-list a {
+  text-decoration: none;
+  color: black;
+}
+
+.nav-list li input {
+  width: 25rem;
+  border: none;
+  background-color: #f9f9f9;
+  padding: 0.7rem;
+  padding-left: 3.2rem;
+  border-radius: 5px;
+}
+
+li button {
+  border: none;
+  background-color: #0079d3;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+}
+
+.container {
+  display: flex;
+  width: 60%;
+  margin: 0 auto;
+  margin-top: 2.4rem;
+  gap: 1.8rem;
+}
+
+.reddit-home {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.card {
+  background-color: white;
+  border-radius: 5px;
+  padding: 0.6rem 1.2rem;
+}
+
+.create-reddit {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.create-reddit img {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+}
+
+.create-reddit input {
+  width: 100%;
+  border: none;
+  background-color: #f9f9f9;
+  padding: 0.6rem;
+  padding-left: 1.2rem;
+  border-radius: 5px;
+}
+
+.create-reddit input:focus {
+  outline: 1px solid #0079d3;
+}
+
+.reddit-posts {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.card.reddit-post {
+  padding: 0;
+}
+
+.reddit-post {
+  display: flex;
+  gap: 1rem;
+}
+
+.votes-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  background-color: rgb(207, 207, 207);
+  padding: 0.8rem 0.4rem;
+}
+
+.vote-up {
+  color: white;
+  font-size: 1.4rem;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+}
+
+.vote-up:hover {
+  color: green;
+}
+
+.vote-down {
+  color: white;
+  font-size: 1.4rem;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+}
+
+.vote-down:hover {
+  color: red;
+}
+.votes {
+  font-weight: bold;
+}
+
+.post {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.post-by {
+  color: #777;
+  padding-top: 0.4rem;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.post-by img {
+  width: 30px;
+}
+.post-title {
+  font-size: 1.6rem;
+}
+
+.comment {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.fa.fa-comment {
+  color: #888;
+  padding: 0.4rem 0;
+}
+
+.side-bar {
+  width: 50rem;
+}
+
+.communities {
+  display: flex;
+  flex-direction: column;
+}
+
+.communities-header p {
+  font-weight: bold;
+  color: white;
+}
+
+.communities-content {
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  background-color: white;
+  padding: 0.4rem 1.2rem;
+  padding-bottom: 1.2rem;
+}
+
+.community {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0.8rem 0;
+  background-color: white;
+  border-bottom: 1px solid #ccc;
+}
+
+.community .community-name {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.community-name img {
+  width: 30px;
+}
+
+.community a {
+  text-decoration: none;
+  color: white;
+  padding: 0.25rem 1rem;
+  background-color: #0079d3;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border-radius: 15px;
+}
+
+.btn {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  padding: 0.5rem 1.4rem;
+  background-color: #0079d3;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 1.2rem;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.cta-reddit {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background-color: white;
+  margin-top: 1.2rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 5px;
+}
+.cta-reddit p {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.cta-reddit img {
+  width: 40px;
+}

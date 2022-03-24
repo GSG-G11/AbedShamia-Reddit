@@ -1,6 +1,6 @@
 const {getLoginPage, indexPage} = require('./pagesController');
 const {registerUser, loginUser, logoutUser} = require('./authController');
-const {getAllPosts, createPost, deletePost} = require('./postsController');
+const {getAllPosts, createPost, deletePost, getPost} = require('./postsController');
 
 module.exports = {
   getLoginPage,
@@ -11,4 +11,5 @@ module.exports = {
   getAllPosts,
   createPost,
   deletePost,
+  getPost,
 };

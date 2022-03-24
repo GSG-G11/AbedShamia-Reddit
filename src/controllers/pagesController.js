@@ -4,7 +4,7 @@ const getLoginPage = (req, res) => {
 };
 
 const indexPage = (req, res) => {
-  res.sendFile(join(__dirname, '..', '..', 'protected', 'index.html'));
+  res.sendFile(join(__dirname, '..', '..', 'protected', 'homepage.html'));
 };
 
 module.exports = {getLoginPage, indexPage};

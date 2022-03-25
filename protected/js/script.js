@@ -204,6 +204,71 @@ function postTemplate(post) {
   postBody.classList.add('post-desc');
   postBody.innerText = post.body;
   redditPost.appendChild(postBody);
+
+  const commentBar = document.createElement('div');
+  commentBar.classList.add('comment-bar');
+  redditPost.appendChild(commentBar);
+
+  const commentBtn = document.createElement('button');
+  commentBtn.classList.add('comment-btn');
+  commentBtn.innerText = 'Add a Comment';
+
+  const commentIcon = document.createElement('i');
+  commentIcon.classList.add('fa', 'fa-comment');
+  commentBtn.appendChild(commentIcon);
+  commentBar.appendChild(commentBtn);
+  const commentInput = document.createElement('div');
+  commentInput.classList.add('comment-input', 'hidden');
+  redditPost.appendChild(commentInput);
+
+  const commentText = document.createElement('textarea');
+  commentText.placeholder = 'Add a comment...';
+  commentInput.appendChild(commentText);
+
+  const commentSubmit = document.createElement('button');
+  commentSubmit.classList.add('comment-submit');
+  commentSubmit.innerText = 'Submit';
+  commentInput.appendChild(commentSubmit);
+  commentBtn.addEventListener('click', e => {
+    e.preventDefault();
+    commentInput.classList.toggle('hidden');
+    commentInput.style.animation = 'goUp 0.5s ease-in-out';
+  });
+  const comment = document.createElement('p');
+  comment.classList.add('comment');
+  commentBar.appendChild(comment);
+
+  const commentsSection = document.createElement('div');
+  commentsSection.classList.add('comments-section');
+  redditPost.appendChild(commentsSection);
+
+  const commentContainer = document.createElement('div');
+  commentContainer.classList.add('comment-container');
+  commentsSection.appendChild(commentContainer);
+
+  const commentProfilePic = document.createElement('img');
+  commentProfilePic.src = 'images/userdefault.png';
+  commentProfilePic.classList.add('comment-profile-pic');
+  commentContainer.appendChild(commentProfilePic);
+
+  const commentBy = document.createElement('p');
+  commentBy.classList.add('comment-by');
+
+  const usernameLink2 = document.createElement('a');
+  usernameLink2.classList.add('username');
+  const date = document.createElement('span');
+  date.classList.add('date');
+
+  commentBy.innerHTML = `<a href='/users/${post.username}' class='username'>${
+    post.username
+  }</a> on ${date.textContent.slice(0, 10)}`;
+
+  commentContainer.appendChild(commentBy);
+
+  const commentBody = document.createElement('p');
+  commentBody.classList.add('comment-body');
+  commentBody.innerText = 'Hello, this is a comment';
+  commentContainer.appendChild(commentBody);
 }
 
 function openPostModal(element) {

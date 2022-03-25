@@ -231,9 +231,39 @@ function postTemplate(post) {
   commentInput.appendChild(commentSubmit);
   commentBtn.addEventListener('click', e => {
     e.preventDefault();
-    commentInput.classList.toggle('hidden');
-    commentInput.style.animation = 'goUp 0.5s ease-in-out';
+    fetch('/api/auth/login/user').then(res => {
+      if (res.status === 401) {
+        alert('You must be logged in to comment');
+      } else {
+        commentInput.classList.toggle('hidden');
+        commentInput.style.animation = 'goUp 0.5s ease-in-out';
+      }
+    });
   });
+
+  commentSubmit.addEventListener('click', e => {
+    e.preventDefault();
+    if (commentText.value === '') {
+      alert('You must enter a comment');
+      return;
+    }
+
+    fetch(`api/v1/comments/posts/${post.id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        body: commentText.value,
+      }),
+    })
+      .then(res => res.json())
+      .then(result => {
+        createComment(commentsSection, post, result.body);
+        commentText.value = '';
+      });
+  });
+
   const comment = document.createElement('p');
   comment.classList.add('comment');
   commentBar.appendChild(comment);
@@ -242,33 +272,7 @@ function postTemplate(post) {
   commentsSection.classList.add('comments-section');
   redditPost.appendChild(commentsSection);
 
-  const commentContainer = document.createElement('div');
-  commentContainer.classList.add('comment-container');
-  commentsSection.appendChild(commentContainer);
-
-  const commentProfilePic = document.createElement('img');
-  commentProfilePic.src = 'images/userdefault.png';
-  commentProfilePic.classList.add('comment-profile-pic');
-  commentContainer.appendChild(commentProfilePic);
-
-  const commentBy = document.createElement('p');
-  commentBy.classList.add('comment-by');
-
-  const usernameLink2 = document.createElement('a');
-  usernameLink2.classList.add('username');
-  const date = document.createElement('span');
-  date.classList.add('date');
-
-  commentBy.innerHTML = `<a href='/users/${post.username}' class='username'>${
-    post.username
-  }</a> on ${date.textContent.slice(0, 10)}`;
-
-  commentContainer.appendChild(commentBy);
-
-  const commentBody = document.createElement('p');
-  commentBody.classList.add('comment-body');
-  commentBody.innerText = 'Hello, this is a comment';
-  commentContainer.appendChild(commentBody);
+  getPostComments(post.id, commentsSection, post, commentText);
 }
 
 function openPostModal(element) {
@@ -353,5 +357,45 @@ function styleVoteBtns(id, upBtn, downBtn) {
         upBtn.classList.remove('active');
         downBtn.classList.remove('active');
       }
+    });
+}
+
+function createComment(commentsSection, post, comment) {
+  const commentContainer = document.createElement('div');
+  commentContainer.classList.add('comment-container');
+  commentsSection.appendChild(commentContainer);
+
+  const commentProfilePic = document.createElement('img');
+  commentProfilePic.src = 'images/userdefault.png';
+  commentProfilePic.classList.add('comment-profile-pic');
+  commentContainer.appendChild(commentProfilePic);
+
+  const commentBy = document.createElement('p');
+  commentBy.classList.add('comment-by');
+
+  const usernameLink2 = document.createElement('a');
+  usernameLink2.classList.add('username');
+  const date = document.createElement('span');
+  date.classList.add('date');
+
+  commentBy.innerHTML = `<a href='/users/${post.username}' class='username'>${
+    post.username
+  }</a> on ${date.textContent.slice(0, 10)}`;
+
+  commentContainer.appendChild(commentBy);
+
+  const commentBody = document.createElement('p');
+  commentBody.classList.add('comment-body');
+  commentBody.innerText = comment;
+  commentContainer.appendChild(commentBody);
+}
+
+function getPostComments(id, commentsSection, post, comment) {
+  fetch(`api/v1/comments/posts/${id}`)
+    .then(res => res.json())
+    .then(comments => {
+      comments.forEach(comment => {
+        createComment(commentsSection, post, comment.body);
+      });
     });
 }

@@ -2,7 +2,7 @@ const connection = require('../database/config/connection');
 const {createError} = require('../errors/customError');
 
 const verifyPostId = async (req, res, next) => {
-  const id = req.params.id;
+  const id = req.params.postId;
 
   // Check the incoming id is a number
   if (isNaN(id)) {

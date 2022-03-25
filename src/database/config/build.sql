@@ -14,7 +14,7 @@ CREATE TABLE users (
   created_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
-CREATE TABLE posts (
+CREATE TABLE posts  (
   id SERIAL PRIMARY KEY,
   title TEXT NOT NULL,
   body TEXT NOT NULL,

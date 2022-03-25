@@ -58,6 +58,18 @@ const getPost = async (req, res) => {
   });
 };
 
+const sumPostVotes = async (req, res) => {
+  // Sum votes where Up = 1 and Down = -1
+  const postId = req.params.id;
+  const votes = await connection.query('SELECT SUM(vote) FROM votes WHERE post_id = $1', [
+    postId,
+  ]);
+  res.status(200).json({
+    status: 'success',
+    votes: votes.rows[0],
+  });
+};
+
 module.exports = {
   getAllPosts,
   createPost,

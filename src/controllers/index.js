@@ -1,7 +1,7 @@
 const {getLoginPage, indexPage} = require('./pagesController');
 const {registerUser, loginUser, logoutUser} = require('./authController');
 const {getAllPosts, createPost, deletePost, getPost} = require('./postsController');
-const {upVote, downVote, sumPostVotes} = require('./votesController');
+const {upVote, downVote, sumPostVotes, didVote} = require('./votesController');
 const {getUserId} = require('./userController');
 
 module.exports = {
@@ -18,4 +18,5 @@ module.exports = {
   upVote,
   downVote,
   sumPostVotes,
+  didVote,
 };

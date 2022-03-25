@@ -70,6 +70,7 @@ function postTemplate(post) {
   fetch('/api/auth/login/user')
     .then(res => res.json())
     .then(user => {
+      profileName.textContent = user.user.username;
       if (user.user.id === post.user_id) {
         const deleteBtn = document.createElement('button');
         deleteBtn.classList.add('delete-btn');
@@ -105,11 +106,49 @@ function postTemplate(post) {
 
   const votes = document.createElement('p');
   votes.classList.add('votes');
-  votes.innerText = 120;
+
+  getPostVotes(post.id, votes);
+
   votesContainer.appendChild(votes);
 
   const downVoteBtn = document.createElement('button');
   downVoteBtn.classList.add('vote-down');
+
+  fetch(`api/auth/login/user`)
+    .then(res => res.json())
+    .then(data => styleVoteBtns(post.id, upVoteBtn, downVoteBtn));
+
+  upVoteBtn.addEventListener('click', e => {
+    e.preventDefault();
+    fetch(`/api/v1/votes/upvote/${post.id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(vote => {
+        getPostVotes(post.id, votes);
+        styleUpVoteBtn(post.id, upVoteBtn);
+        styleDownVoteBtn(post.id, downVoteBtn);
+      });
+  });
+
+  downVoteBtn.addEventListener('click', e => {
+    e.preventDefault();
+    fetch(`/api/v1/votes/downvote/${post.id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(vote => {
+        getPostVotes(post.id, votes);
+        styleDownVoteBtn(post.id, downVoteBtn);
+        styleUpVoteBtn(post.id, upVoteBtn);
+      });
+  });
 
   const downVoteIcon = document.createElement('i');
   downVoteIcon.classList.add('fa', 'fa-arrow-down');
@@ -195,3 +234,51 @@ submitBtn.addEventListener('click', e => {
     })
     .catch(err => console.log(err));
 });
+
+function getPostVotes(id, votes) {
+  fetch(`/api/v1/votes/${id}`)
+    .then(res => res.json())
+    .then(vote => {
+      votes.innerText = vote.total_votes;
+    })
+    .catch(err => console.log(err));
+}
+
+function styleUpVoteBtn(id, upVoteBtn) {
+  fetch(`/api/v1/votes/posts/${id}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.vote === 'up') {
+        upVoteBtn.classList.add('active');
+      } else {
+        upVoteBtn.classList.remove('active');
+      }
+    });
+}
+
+function styleDownVoteBtn(id, downVoteBtn) {
+  fetch(`/api/v1/votes/posts/${id}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.vote === 'down') {
+        downVoteBtn.classList.add('active');
+      } else {
+        downVoteBtn.classList.remove('active');
+      }
+    });
+}
+
+function styleVoteBtns(id, upBtn, downBtn) {
+  fetch(`api/v1/votes/posts/${id}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.vote === 'up') {
+        upBtn.classList.add('active');
+      } else if (data.vote === 'down') {
+        downBtn.classList.add('active');
+      } else {
+        upBtn.classList.remove('active');
+        downBtn.classList.remove('active');
+      }
+    });
+}

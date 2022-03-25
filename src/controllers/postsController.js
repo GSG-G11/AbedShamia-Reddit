@@ -41,13 +41,14 @@ const createPost = async (req, res) => {
 };
 
 const deletePost = async (req, res) => {
-  const id = req.params.id;
+  const id = req.params.postId;
+  console.log(id);
   await connection.query('DELETE FROM posts WHERE id = $1', [id]);
   res.sendStatus(204);
 };
 
 const getPost = async (req, res) => {
-  const id = req.params.id;
+  const id = req.params.postId;
   const post = await connection.query(
     'SELECT users.username, posts.id FROM users LEFT JOIN posts ON users.id = posts.user_id WHERE posts.id = $1',
     [id]

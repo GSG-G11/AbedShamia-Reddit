@@ -4,7 +4,7 @@ const {createError} = require('../errors/customError');
 const userOwnPost = async (req, res, next) => {
   const userId = +req.user.id;
   const postId = await connection.query('SELECT user_id FROM posts WHERE id = $1', [
-    req.params.id,
+    req.params.postId,
   ]);
 
   if (userId !== +postId.rows[0].user_id) {

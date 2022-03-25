@@ -7,7 +7,7 @@ const userOwnPost = require('../middlewares/userOwnPost');
 router.route('/').get(getAllPosts).post(verifyToken, createPost);
 
 router
-  .route('/:id')
+  .route('/:postId')
   .delete(verifyPostId, verifyToken, userOwnPost, deletePost)
   .get(verifyPostId, getPost);
 

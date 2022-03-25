@@ -19,7 +19,7 @@ CREATE TABLE posts  (
   title TEXT NOT NULL,
   body TEXT NOT NULL,
   user_id INT NOT NULL,
-  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   created_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
@@ -28,8 +28,8 @@ CREATE TABLE votes(
   vote vote_type NOT NULL DEFAULT 'none',
   user_id INT NOT NULL,
   post_id INT NOT NULL,
-  FOREIGN KEY (user_id) REFERENCES users(id),
-  FOREIGN KEY (post_id) REFERENCES posts(id),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
   created_at TIMESTAMP NOT NULL DEFAULT now()
 );
 

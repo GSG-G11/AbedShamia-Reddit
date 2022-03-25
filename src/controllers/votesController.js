@@ -75,7 +75,7 @@ const downVote = async (req, res) => {
 const sumPostVotes = async (req, res) => {
   const {postId} = req.params;
   const sumVotes = await connection.query(
-    `SELECT SUM(CASE WHEN vote = 'up' THEN 1 WHEN vote = 'down' THEN -1 ELSE 0 END) AS total_votes FROM votes WHERE post_id = $1`,
+    `SELECT SUM(CASE WHEN vote = 'up' THEN 1 WHEN vote = 'down' THEN -1 WHEN vote = 'none' THEN 0 END) AS total_votes FROM votes WHERE post_id = $1`,
     [postId]
   );
 
@@ -85,8 +85,24 @@ const sumPostVotes = async (req, res) => {
   });
 };
 
+const didVote = async (req, res) => {
+  const {postId} = req.params;
+  const {id} = req.user;
+
+  const checkVote = await connection.query(
+    'SELECT * FROM votes WHERE user_id = $1 AND post_id = $2',
+    [id, postId]
+  );
+
+  res.status(200).json({
+    status: 'success',
+    vote: checkVote.rows[0].vote,
+  });
+};
+
 module.exports = {
   upVote,
   downVote,
   sumPostVotes,
+  didVote,
 };

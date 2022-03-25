@@ -31,12 +31,10 @@ logoutBtn.addEventListener('click', e => {
   })
     .then(res => res.json())
     .then(result => {
-      console.log(result);
       if (result.status) {
         window.location.href = '/';
       }
-    })
-    .catch(err => console.log(err));
+    });
 });
 
 createPostInput.addEventListener('click', openPostModal(createPostInput));
@@ -59,8 +57,7 @@ document.addEventListener('click', e => {
 
 fetch('/api/v1/posts')
   .then(res => res.json())
-  .then(({posts}) => posts.map(post => postTemplate(post)))
-  .catch(err => console.log(err));
+  .then(({posts}) => posts.map(post => postTemplate(post)));
 
 function postTemplate(post) {
   const redditCard = document.createElement('div');
@@ -81,13 +78,11 @@ function postTemplate(post) {
           e.preventDefault();
           fetch(`/api/v1/posts/${post.id}`, {
             method: 'DELETE',
-          })
-            .then(res => {
-              if (res.status === 204) {
-                redditCard.remove();
-              }
-            })
-            .catch(err => console.log(err));
+          }).then(res => {
+            if (res.status === 204) {
+              redditCard.remove();
+            }
+          });
         });
       }
     });
@@ -126,8 +121,14 @@ function postTemplate(post) {
         'Content-Type': 'application/json',
       },
     })
-      .then(res => res.json())
-      .then(vote => {
+      .then(res => {
+        if (res.status === 401) {
+          alert('You must be logged in to vote');
+        } else {
+          return res.json();
+        }
+      })
+      .then(() => {
         getPostVotes(post.id, votes);
         styleUpVoteBtn(post.id, upVoteBtn);
         styleDownVoteBtn(post.id, downVoteBtn);
@@ -142,8 +143,14 @@ function postTemplate(post) {
         'Content-Type': 'application/json',
       },
     })
-      .then(res => res.json())
-      .then(vote => {
+      .then(res => {
+        if (res.status === 401) {
+          alert('You must be logged in to vote');
+        } else {
+          return res.json();
+        }
+      })
+      .then(() => {
         getPostVotes(post.id, votes);
         styleDownVoteBtn(post.id, downVoteBtn);
         styleUpVoteBtn(post.id, upVoteBtn);
@@ -167,8 +174,8 @@ function postTemplate(post) {
   const userImg = document.createElement('img');
   userImg.src = 'images/userdefault.png';
 
-  const usernameSpan = document.createElement('span');
-  usernameSpan.classList.add('username');
+  const usernameLink = document.createElement('a');
+  usernameLink.classList.add('username');
 
   const dateCreated = document.createElement('span');
   dateCreated.classList.add('date');
@@ -178,13 +185,16 @@ function postTemplate(post) {
     .then(res => res.json())
     .then(result => {
       if (result.status === 'success') {
-        usernameSpan.textContent = result.post.username;
-        postedBy.innerHTML = `<img src=${userImg.src}> Post by ${
-          usernameSpan.textContent
-        } on ${dateCreated.textContent.slice(0, 10)}`;
+        usernameLink.textContent = result.post.username;
+        usernameLink.href = `/users/${result.post.username}`;
+        postedBy.innerHTML = `<img src=${userImg.src}> Post by <a href='/users/${
+          result.post.username
+        }' class='username'>${usernameLink.innerText}</a> on ${dateCreated.textContent.slice(
+          0,
+          10
+        )}`;
       }
-    })
-    .catch(err => console.log(err));
+    });
   const postTitle = document.createElement('p');
   postTitle.classList.add('post-title');
   postTitle.innerText = post.title;
@@ -231,8 +241,7 @@ submitBtn.addEventListener('click', e => {
       if (result.status) {
         window.location.reload();
       }
-    })
-    .catch(err => console.log(err));
+    });
 });
 
 function getPostVotes(id, votes) {
@@ -240,8 +249,7 @@ function getPostVotes(id, votes) {
     .then(res => res.json())
     .then(vote => {
       votes.innerText = vote.total_votes;
-    })
-    .catch(err => console.log(err));
+    });
 }
 
 function styleUpVoteBtn(id, upVoteBtn) {

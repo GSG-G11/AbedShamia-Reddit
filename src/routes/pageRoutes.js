@@ -1,9 +1,8 @@
 const router = require('express').Router();
-const verifyToken = require('../middlewares/verifyToken');
-const {getLoginPage, indexPage} = require('../controllers');
+const {getLoginPage, indexPage, userPage} = require('../controllers');
 const isUserLoggedIn = require('../middlewares/loggedIn');
-router.get('/reddit/login', isUserLoggedIn, getLoginPage);
-
 router.get('/', indexPage);
+router.get('/users/:username', userPage);
+router.get('/reddit/login', isUserLoggedIn, getLoginPage);
 
 module.exports = router;

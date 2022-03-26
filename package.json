@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node src/server.js",
+    "start": "NODE_ENV=production node src/server.js",
     "dev": "cross-env NODE_ENV=development nodemon src/server.js",
-    "build": "cross-env NODE_ENV=development node src/database/config/build.js",
+    "build": "NODE_ENV=development node src/database/config/build.js",
     "test": "jest"
   },
   "dependencies": {
@@ -20,10 +20,10 @@
     "helmet": "^5.0.2",
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
-    "pg": "^8.7.3",
-    "cross-env": "^7.0.3"
+    "pg": "^8.7.3"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "eslint": "^8.11.0",
     "jest": "^27.5.1",
     "nodemon": "^2.0.15",

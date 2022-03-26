@@ -373,14 +373,20 @@ function createComment(commentsSection, post, comment) {
   const commentBy = document.createElement('p');
   commentBy.classList.add('comment-by');
 
-  const usernameLink2 = document.createElement('a');
-  usernameLink2.classList.add('username');
+  const usernameLink = document.createElement('a');
+  usernameLink.classList.add('username');
   const date = document.createElement('span');
   date.classList.add('date');
 
-  commentBy.innerHTML = `<a href='/users/${post.username}' class='username'>${
-    post.username
-  }</a> on ${date.textContent.slice(0, 10)}`;
+  fetch(`api/v1/comments/posts/users/${post.id}`)
+    .then(res => res.json())
+    .then(data => {
+      data.map(comment => {
+        commentBy.innerHTML = `<a href='/users/${comment.username}' class='username'>${
+          comment.username
+        }</a> on ${comment.created_at.slice(0, 10)}`;
+      });
+    });
 
   commentContainer.appendChild(commentBy);
 

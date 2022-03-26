@@ -38,8 +38,20 @@ const getUserInfoThroughComment = async (req, res) => {
   res.status(200).json(user.rows);
 };
 
+const getCommentsNumber = async (req, res) => {
+  const {postId} = req.params;
+
+  const commentsNumber = await connection.query(
+    'SELECT COUNT(*) FROM comments WHERE post_id = $1',
+    [postId]
+  );
+
+  res.status(200).json(commentsNumber.rows[0]);
+};
+
 module.exports = {
   getPostComments,
   createComment,
   getUserInfoThroughComment,
+  getCommentsNumber,
 };

@@ -1,19 +1,16 @@
 const logoutBtn = document.querySelector('.logout-btn');
-const createPostInput = document.querySelector('.create-post');
-const createReddit = document.querySelector('.create-reddit');
-const createPostBtn = document.querySelector('.create-post-btn');
-const closeModalBtn = document.querySelector('.close-btn');
 const postsContainer = document.querySelector('.reddit-posts');
 const profileName = document.querySelector('.profile-name');
 const rightNav = document.querySelector('.right-nav');
 
-const submitBtn = document.querySelector('.submit-btn');
+const userLoggedIn = document.querySelector('.username');
+const userVisited = document.querySelectorAll('.uservisited');
+
+const user = window.location.pathname.split('/')[2];
 
 fetch('/api/auth/login/user').then(res => {
   if (res.status === 401) {
     logoutBtn.style.display = 'none';
-    createPostBtn.style.display = 'none';
-    createReddit.style.display = 'none';
     profileName.style.display = 'none';
     const signUpBtn = document.createElement('button');
     signUpBtn.innerText = 'Sign Up / Login';
@@ -23,41 +20,45 @@ fetch('/api/auth/login/user').then(res => {
     });
     rightNav.appendChild(signUpBtn);
   }
-});
 
-logoutBtn.addEventListener('click', e => {
-  fetch('/api/auth/logout', {
-    method: 'POST',
-  })
-    .then(res => res.json())
-    .then(result => {
-      if (result.status) {
-        window.location.href = '/';
-      }
+  if (res.status === 200) {
+    res.json().then(user => {
+      profileName.innerText = user.user.username;
+      // Set href to user profile
+      profileName.href = `/users/${user.user.username}`;
     });
-});
 
-createPostInput.addEventListener('click', openPostModal(createPostInput));
-createPostBtn.addEventListener('click', openPostModal(createPostBtn));
-
-closeModalBtn.addEventListener('click', e => {
-  const modal = document.querySelector('.modal-container');
-  document.querySelector('.container').classList.remove('blur');
-  modal.classList.remove('show-modal');
-});
-
-// If clicked away from modal, close modal
-document.addEventListener('click', e => {
-  const modal = document.querySelector('.modal-container');
-  if (e.target == modal) {
-    document.querySelector('.container').classList.remove('blur');
-    modal.classList.remove('show-modal');
+    logoutBtn.addEventListener('click', e => {
+      fetch('/api/auth/logout', {
+        method: 'POST',
+      })
+        .then(res => res.json())
+        .then(result => {
+          if (result.status) {
+            window.location.href = '/reddit/login';
+          }
+        });
+    });
   }
 });
 
-fetch('/api/v1/posts')
+userVisited.forEach(name => {
+  name.innerText = user;
+});
+
+fetch(`/api/v1/users/${user}`)
   .then(res => res.json())
-  .then(({posts}) => posts.map(post => postTemplate(post)));
+  .then(({posts}) => {
+    if (posts.length === 0) {
+      const noPosts = document.createElement('p');
+      noPosts.innerText = 'The user has not posted anything yet.';
+      noPosts.classList.add('no-posts');
+      postsContainer.appendChild(noPosts);
+    }
+    posts.forEach(post => {
+      postTemplate(post);
+    });
+  });
 
 function postTemplate(post) {
   const redditCard = document.createElement('div');
@@ -67,8 +68,6 @@ function postTemplate(post) {
   fetch('/api/auth/login/user')
     .then(res => res.json())
     .then(user => {
-      profileName.textContent = user.user.username;
-      profileName.href = `/users/${user.user.username}`;
       if (user.user.id === post.user_id) {
         const deleteBtn = document.createElement('button');
         deleteBtn.classList.add('delete-btn');
@@ -110,7 +109,7 @@ function postTemplate(post) {
   const downVoteBtn = document.createElement('button');
   downVoteBtn.classList.add('vote-down');
 
-  fetch(`api/auth/login/user`)
+  fetch(`/api/auth/login/user`)
     .then(res => res.json())
     .then(data => styleVoteBtns(post.id, upVoteBtn, downVoteBtn));
 
@@ -173,7 +172,7 @@ function postTemplate(post) {
   redditPost.appendChild(postedBy);
 
   const userImg = document.createElement('img');
-  userImg.src = 'images/userdefault.png';
+  userImg.src = '/images/userdefault.png';
 
   const usernameLink = document.createElement('a');
   usernameLink.classList.add('username');
@@ -269,7 +268,7 @@ function postTemplate(post) {
   comment.classList.add('comment');
   commentBar.appendChild(comment);
 
-  fetch(`api/v1/comments/posts/sum/${post.id}`)
+  fetch(`/api/v1/comments/posts/sum/${post.id}`)
     .then(res => res.json())
     .then(({count}) => {
       comment.innerText = `${count} comments`;
@@ -281,44 +280,6 @@ function postTemplate(post) {
 
   getPostComments(post.id, commentsSection, post, commentText);
 }
-
-function openPostModal(element) {
-  element.addEventListener('click', e => {
-    const modal = document.querySelector('.modal-container');
-    document.querySelector('.container').classList.add('blur');
-    modal.classList.add('show-modal');
-  });
-}
-
-submitBtn.addEventListener('click', e => {
-  const title = document.querySelector('input[name="title"]');
-  const body = document.querySelector('textarea[name="body"]');
-
-  const titleValue = title.value;
-  const bodyValue = body.value;
-
-  if (!titleValue.trim() || !bodyValue.trim()) {
-    alert('Please fill in all fields');
-    return;
-  }
-
-  fetch('/api/v1/posts', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      title: titleValue,
-      body: bodyValue,
-    }),
-  })
-    .then(res => res.json())
-    .then(result => {
-      if (result.status) {
-        window.location.reload();
-      }
-    });
-});
 
 function getPostVotes(id, votes) {
   fetch(`/api/v1/votes/${id}`)
@@ -353,7 +314,7 @@ function styleDownVoteBtn(id, downVoteBtn) {
 }
 
 function styleVoteBtns(id, upBtn, downBtn) {
-  fetch(`api/v1/votes/posts/${id}`)
+  fetch(`/api/v1/votes/posts/${id}`)
     .then(res => res.json())
     .then(data => {
       if (data.vote === 'up') {
@@ -373,7 +334,7 @@ function createComment(commentsSection, post, comment) {
   commentsSection.appendChild(commentContainer);
 
   const commentProfilePic = document.createElement('img');
-  commentProfilePic.src = 'images/userdefault.png';
+  commentProfilePic.src = '/images/userdefault.png';
   commentProfilePic.classList.add('comment-profile-pic');
   commentContainer.appendChild(commentProfilePic);
 
@@ -385,7 +346,7 @@ function createComment(commentsSection, post, comment) {
   const date = document.createElement('span');
   date.classList.add('date');
 
-  fetch(`api/v1/comments/posts/users/${post.id}`)
+  fetch(`/api/v1/comments/posts/users/${post.id}`)
     .then(res => res.json())
     .then(data => {
       data.map(comment => {
@@ -404,7 +365,7 @@ function createComment(commentsSection, post, comment) {
 }
 
 function getPostComments(id, commentsSection, post, comment) {
-  fetch(`api/v1/comments/posts/${id}`)
+  fetch(`/api/v1/comments/posts/${id}`)
     .then(res => res.json())
     .then(comments => {
       comments.forEach(comment => {

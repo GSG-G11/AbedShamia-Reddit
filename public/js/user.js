@@ -241,6 +241,12 @@ function postTemplate(post) {
     });
   });
 
+  const comment = document.createElement('p');
+  comment.classList.add('comment');
+  commentBar.appendChild(comment);
+
+  getCommentsCount(post.id, comment);
+
   commentSubmit.addEventListener('click', e => {
     e.preventDefault();
     if (commentText.value === '') {
@@ -248,7 +254,7 @@ function postTemplate(post) {
       return;
     }
 
-    fetch(`api/v1/comments/posts/${post.id}`, {
+    fetch(`/api/v1/comments/posts/${post.id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -261,19 +267,9 @@ function postTemplate(post) {
       .then(result => {
         createComment(commentsSection, post, result.body);
         commentText.value = '';
+        getCommentsCount(post.id, comment);
       });
   });
-
-  const comment = document.createElement('p');
-  comment.classList.add('comment');
-  commentBar.appendChild(comment);
-
-  fetch(`/api/v1/comments/posts/sum/${post.id}`)
-    .then(res => res.json())
-    .then(({count}) => {
-      comment.innerText = `${count} comments`;
-    });
-
   const commentsSection = document.createElement('div');
   commentsSection.classList.add('comments-section');
   redditPost.appendChild(commentsSection);
@@ -354,6 +350,9 @@ function createComment(commentsSection, post, comment) {
           comment.username
         }</a> on ${comment.created_at.slice(0, 10)}`;
       });
+    })
+    .catch(err => {
+      console.log(err);
     });
 
   commentContainer.appendChild(commentBy);
@@ -371,5 +370,13 @@ function getPostComments(id, commentsSection, post, comment) {
       comments.forEach(comment => {
         createComment(commentsSection, post, comment.body);
       });
+    });
+}
+
+function getCommentsCount(id, commentsCount) {
+  fetch(`/api/v1/comments/posts/sum/${id}`)
+    .then(res => res.json())
+    .then(({count}) => {
+      commentsCount.innerText = `${count} comments`;
     });
 }

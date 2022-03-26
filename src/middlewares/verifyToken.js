@@ -11,7 +11,6 @@ const verifyToken = async (req, res, next) => {
     const decodedToken = verify(token, process.env.JWT_SECRET);
     const {id, username} = decodedToken;
     req.user = {id, username};
-    console.log(req.user);
     next();
   } catch (error) {
     throw createError('Invalid token', 401);

@@ -1,8 +1,6 @@
 const router = require('express').Router();
 const {getAllPosts, createPost, deletePost, getPost} = require('../controllers');
-const verifyToken = require('../middlewares/verifyToken');
-const verifyPostId = require('../middlewares/verifyPostId');
-const userOwnPost = require('../middlewares/userOwnPost');
+const {verifyToken, verifyPostId, userOwnPost} = require('../middlewares');
 
 router.route('/').get(getAllPosts).post(verifyToken, createPost);
 

@@ -2,7 +2,7 @@ require('express-async-errors');
 const router = require('express').Router();
 const {registerUser, loginUser, logoutUser} = require('../controllers');
 const {getUserId} = require('../controllers');
-const verifyToken = require('../middlewares/verifyToken');
+const {verifyToken} = require('../middlewares');
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);

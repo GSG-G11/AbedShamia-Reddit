@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const connection = require('../database/config/connection');
 const {createError} = require('../errors/customError');
+
 const registerUser = async (req, res) => {
   const {username, password, confirm_password, email} = req.body;
 

@@ -4,8 +4,7 @@ const {
   getUserInfoThroughComment,
   getCommentsNumber,
 } = require('../controllers');
-const verifyPostId = require('../middlewares/verifyPostId');
-const verifyToken = require('../middlewares/verifyToken');
+const {verifyToken, verifyPostId} = require('../middlewares');
 const router = require('express').Router();
 
 router.get('/:postId', verifyPostId, getPostComments);

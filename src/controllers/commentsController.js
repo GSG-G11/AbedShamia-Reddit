@@ -3,9 +3,10 @@ const {createError} = require('../errors/customError');
 const getPostComments = async (req, res) => {
   const {postId} = req.params;
 
-  const comments = await connection.query('SELECT * FROM comments WHERE post_id = $1', [
-    postId,
-  ]);
+  const comments = await connection.query(
+    'SELECT comments.body, comments.created_at, users.username FROM comments JOIN users ON users.id = comments.user_id WHERE post_id = $1',
+    [postId]
+  );
 
   res.status(200).json(comments.rows);
 };

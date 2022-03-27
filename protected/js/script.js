@@ -59,7 +59,16 @@ document.addEventListener('click', e => {
 /////////// Get Posts ///////////
 fetch('/api/v1/posts')
   .then(res => res.json())
-  .then(({posts}) => posts.map(post => postTemplate(post)));
+  .then(({posts}) =>
+    posts.map(post => {
+      const createdPost = postTemplate(post);
+      getPostComments(
+        createdPost.dataset.id,
+        createdPost.querySelector('.comments-section'),
+        post
+      );
+    })
+  );
 
 //////////////////////////////// Post  ////////////////////////////////
 function postTemplate(post) {
@@ -128,6 +137,7 @@ function postTemplate(post) {
   const redditPost = document.createElement('div');
   redditPost.classList.add('post');
   redditCard.appendChild(redditPost);
+  redditPost.setAttribute('data-id', post.id);
 
   const postedBy = document.createElement('p');
   postedBy.classList.add('post-by');
@@ -195,8 +205,6 @@ function postTemplate(post) {
   commentsSection.classList.add('comments-section');
   redditPost.appendChild(commentsSection);
 
-  getPostComments(post.id, commentsSection, post, commentText);
-
   commentSubmit.addEventListener('click', e => {
     e.preventDefault();
     if (commentText.value === '') {
@@ -215,7 +223,10 @@ function postTemplate(post) {
     })
       .then(res => res.json())
       .then(result => {
+        console.log(result);
         createComment(commentsSection, post, result.body);
+        commentsSection.innerHTML = '';
+        getPostComments(post.id, commentsSection);
         commentText.value = '';
       });
   });
@@ -229,6 +240,8 @@ function postTemplate(post) {
     .then(({count}) => {
       comment.innerText = `${count} comments`;
     });
+
+  return redditPost;
 }
 
 //////////////////////////////// Create Post ////////////////////////////////
@@ -386,32 +399,38 @@ function createComment(commentsSection, post, comment) {
   const usernameLink = document.createElement('a');
   usernameLink.classList.add('username');
   const date = document.createElement('span');
+  date.textContent = comment.created_at;
   date.classList.add('date');
 
-  fetch(`/api/v1/comments/posts/users/${post.id}`)
-    .then(res => res.json())
-    .then(data => {
-      data.map(comment => {
-        commentBy.innerHTML = `<a href='/users/${comment.username}' class='username'>${
-          comment.username
-        }</a> on ${comment.created_at.slice(0, 10)}`;
-      });
-    });
+  // console.log(post);
+  // fetch(`/api/v1/comments/posts/users/${post.id}`)
+  //   .then(res => res.json())
+  //   .then(data => {
+  //     data.map(comment => {
+
+  //     });
+  //   });
+
+  usernameLink.textContent = comment.username;
+  usernameLink.href = `/users/${comment.username}`;
+  commentBy.innerHTML = `Post by <a href='/users/${comment.username}' class='username'>${
+    usernameLink.innerText
+  }</a> on ${date.textContent.slice(0, 10)}`;
 
   commentContainer.appendChild(commentBy);
 
   const commentBody = document.createElement('p');
   commentBody.classList.add('comment-body');
-  commentBody.innerText = comment;
+  commentBody.innerText = comment.body;
   commentContainer.appendChild(commentBody);
 }
 
-function getPostComments(id, commentsSection, post, comment) {
+function getPostComments(id, commentsSection, post) {
   fetch(`/api/v1/comments/posts/${id}`)
     .then(res => res.json())
     .then(comments => {
       comments.forEach(comment => {
-        createComment(commentsSection, post, comment.body);
+        createComment(commentsSection, post, comment);
       });
     });
 }

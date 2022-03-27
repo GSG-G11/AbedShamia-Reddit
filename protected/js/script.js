@@ -77,7 +77,13 @@ function postTemplate(post) {
   postsContainer.appendChild(redditCard);
 
   fetch(`/api/auth/login/user`)
-    .then(res => res.json())
+    .then(res => {
+      if (res.status !== 200) {
+        return;
+      } else {
+        return res.json();
+      }
+    })
     .then(user => {
       profileName.textContent = user.user.username;
       profileName.href = `/users/${user.user.username}`;
@@ -98,6 +104,9 @@ function postTemplate(post) {
           });
         });
       }
+    })
+    .catch(err => {
+      console.log(err);
     });
   const votesContainer = document.createElement('div');
   votesContainer.classList.add('votes-container');

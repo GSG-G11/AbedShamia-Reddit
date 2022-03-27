@@ -28,17 +28,6 @@ const createComment = async (req, res) => {
   res.status(201).json(comment.rows[0]);
 };
 
-const getUserInfoThroughComment = async (req, res) => {
-  const {postId} = req.params;
-
-  const user = await connection.query(
-    'SELECT username, comments.created_at FROM comments JOIN users ON users.id = comments.user_id WHERE post_id = $1',
-    [postId]
-  );
-
-  res.status(200).json(user.rows);
-};
-
 const getCommentsNumber = async (req, res) => {
   const {postId} = req.params;
 
@@ -53,6 +42,5 @@ const getCommentsNumber = async (req, res) => {
 module.exports = {
   getPostComments,
   createComment,
-  getUserInfoThroughComment,
   getCommentsNumber,
 };

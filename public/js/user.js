@@ -113,49 +113,9 @@ function postTemplate(post) {
     .then(res => res.json())
     .then(data => styleVoteBtns(post.id, upVoteBtn, downVoteBtn));
 
-  upVoteBtn.addEventListener('click', e => {
-    e.preventDefault();
-    fetch(`/api/v1/votes/upvote/${post.id}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(res => {
-        if (res.status === 401) {
-          alert('You must be logged in to vote');
-        } else {
-          return res.json();
-        }
-      })
-      .then(() => {
-        getPostVotes(post.id, votes);
-        styleUpVoteBtn(post.id, upVoteBtn);
-        styleDownVoteBtn(post.id, downVoteBtn);
-      });
-  });
+  upVote(upVoteBtn, post.id, votes, upVoteBtn, downVoteBtn);
 
-  downVoteBtn.addEventListener('click', e => {
-    e.preventDefault();
-    fetch(`/api/v1/votes/downvote/${post.id}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(res => {
-        if (res.status === 401) {
-          alert('You must be logged in to vote');
-        } else {
-          return res.json();
-        }
-      })
-      .then(() => {
-        getPostVotes(post.id, votes);
-        styleDownVoteBtn(post.id, downVoteBtn);
-        styleUpVoteBtn(post.id, upVoteBtn);
-      });
-  });
+  downVote(downVoteBtn, post.id, votes, upVoteBtn, downVoteBtn);
 
   const downVoteIcon = document.createElement('i');
   downVoteIcon.classList.add('fa', 'fa-arrow-down');
@@ -166,6 +126,7 @@ function postTemplate(post) {
   const redditPost = document.createElement('div');
   redditPost.classList.add('post');
   redditCard.appendChild(redditPost);
+  redditPost.setAttribute('data-id', post.id);
 
   const postedBy = document.createElement('p');
   postedBy.classList.add('post-by');
@@ -181,20 +142,6 @@ function postTemplate(post) {
   dateCreated.classList.add('date');
   dateCreated.innerText = post.created_at;
 
-  fetch(`/api/v1/posts/${post.id}`)
-    .then(res => res.json())
-    .then(result => {
-      if (result.status === 'success') {
-        usernameLink.textContent = result.post.username;
-        usernameLink.href = `/users/${result.post.username}`;
-        postedBy.innerHTML = `<img src=${userImg.src}> Post by <a href='/users/${
-          result.post.username
-        }' class='username'>${usernameLink.innerText}</a> on ${dateCreated.textContent.slice(
-          0,
-          10
-        )}`;
-      }
-    });
   const postTitle = document.createElement('p');
   postTitle.classList.add('post-title');
   postTitle.innerText = post.title;
@@ -204,6 +151,8 @@ function postTemplate(post) {
   postBody.classList.add('post-desc');
   postBody.innerText = post.body;
   redditPost.appendChild(postBody);
+
+  postCreatedBy(post.id, usernameLink, postedBy, userImg, dateCreated);
 
   const commentBar = document.createElement('div');
   commentBar.classList.add('comment-bar');
@@ -266,6 +215,8 @@ function postTemplate(post) {
       .then(res => res.json())
       .then(result => {
         createComment(commentsSection, post, result.body);
+        commentsSection.innerHTML = '';
+        getPostComments(post.id, commentsSection);
         commentText.value = '';
         getCommentsCount(post.id, comment);
       });
@@ -275,6 +226,64 @@ function postTemplate(post) {
   redditPost.appendChild(commentsSection);
 
   getPostComments(post.id, commentsSection, post, commentText);
+}
+
+getCommentsCount = (postId, comment) => {
+  fetch(`/api/v1/comments/posts/${postId}`)
+    .then(res => res.json())
+    .then(data => {
+      comment.innerText = `${data.length} comments`;
+    });
+};
+
+/////////////// Post Upvote/Downvote  ////////////////////////////////
+
+function upVote(btn, id, votes, upVoteBtn, downVoteBtn) {
+  btn.addEventListener('click', e => {
+    e.preventDefault();
+    fetch(`/api/v1/votes/upvote/${id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => {
+        if (res.status === 401) {
+          alert('You must be logged in to vote');
+        } else {
+          return res.json();
+        }
+      })
+      .then(() => {
+        getPostVotes(id, votes);
+        styleUpVoteBtn(id, upVoteBtn);
+        styleDownVoteBtn(id, downVoteBtn);
+      });
+  });
+}
+
+function downVote(btn, id, votes, upVoteBtn, downVoteBtn) {
+  btn.addEventListener('click', e => {
+    e.preventDefault();
+    fetch(`/api/v1/votes/downvote/${id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => {
+        if (res.status === 401) {
+          alert('You must be logged in to vote');
+        } else {
+          return res.json();
+        }
+      })
+      .then(() => {
+        getPostVotes(id, votes);
+        styleDownVoteBtn(id, downVoteBtn);
+        styleUpVoteBtn(id, upVoteBtn);
+      });
+  });
 }
 
 function getPostVotes(id, votes) {
@@ -324,6 +333,8 @@ function styleVoteBtns(id, upBtn, downBtn) {
     });
 }
 
+///////////////////// Post Comments ////////////////////////////////
+
 function createComment(commentsSection, post, comment) {
   const commentContainer = document.createElement('div');
   commentContainer.classList.add('comment-container');
@@ -340,43 +351,48 @@ function createComment(commentsSection, post, comment) {
   const usernameLink = document.createElement('a');
   usernameLink.classList.add('username');
   const date = document.createElement('span');
+  date.textContent = comment.created_at;
   date.classList.add('date');
 
-  fetch(`/api/v1/comments/posts/users/${post.id}`)
-    .then(res => res.json())
-    .then(data => {
-      data.map(comment => {
-        commentBy.innerHTML = `<a href='/users/${comment.username}' class='username'>${
-          comment.username
-        }</a> on ${comment.created_at.slice(0, 10)}`;
-      });
-    })
-    .catch(err => {
-      console.log(err);
-    });
+  usernameLink.textContent = comment.username;
+  usernameLink.href = `/users/${comment.username}`;
+  commentBy.innerHTML = `Post by <a href='/users/${comment.username}' class='username'>${
+    usernameLink.innerText
+  }</a> on ${date.textContent.slice(0, 10)}`;
 
   commentContainer.appendChild(commentBy);
 
   const commentBody = document.createElement('p');
   commentBody.classList.add('comment-body');
-  commentBody.innerText = comment;
+  commentBody.innerText = comment.body;
   commentContainer.appendChild(commentBody);
 }
 
-function getPostComments(id, commentsSection, post, comment) {
+function getPostComments(id, commentsSection, post) {
   fetch(`/api/v1/comments/posts/${id}`)
     .then(res => res.json())
     .then(comments => {
       comments.forEach(comment => {
-        createComment(commentsSection, post, comment.body);
+        createComment(commentsSection, post, comment);
       });
     });
 }
 
-function getCommentsCount(id, commentsCount) {
-  fetch(`/api/v1/comments/posts/sum/${id}`)
+///////////////// Post Created By //////////////////////////
+
+function postCreatedBy(id, usernameLink, postedBy, userImg, dateCreated) {
+  fetch(`/api/v1/posts/${id}`)
     .then(res => res.json())
-    .then(({count}) => {
-      commentsCount.innerText = `${count} comments`;
+    .then(result => {
+      if (result.status === 'success') {
+        usernameLink.textContent = result.post.username;
+        usernameLink.href = `/users/${result.post.username}`;
+        postedBy.innerHTML = `<img src=${userImg.src}> Post by <a href='/users/${
+          result.post.username
+        }' class='username'>${usernameLink.innerText}</a> on ${dateCreated.textContent.slice(
+          0,
+          10
+        )}`;
+      }
     });
 }

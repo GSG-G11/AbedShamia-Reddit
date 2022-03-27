@@ -2,7 +2,10 @@ const connection = require('../database/config/connection');
 const {createError} = require('../errors/customError');
 const Joi = require('joi');
 const getAllPosts = async (req, res) => {
-  const posts = await connection.query('SELECT * FROM posts ORDER BY created_at DESC');
+  // Sum the votes of a post in the votes table
+  const posts = await connection.query(
+    `SELECT posts.id, posts.title, posts.body, posts.created_at, posts.user_id, users.username, COUNT(CASE WHEN votes.vote = 'up' THEN 1 ELSE NULL END ) AS upvotes FROM posts LEFT JOIN users ON posts.user_id = users.id LEFT JOIN votes ON posts.id = votes.post_id GROUP BY posts.id, users.username ORDER BY upvotes DESC`
+  );
 
   if (!posts.rowCount) {
     throw createError('No posts found', 404);

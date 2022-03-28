@@ -1,12 +1,12 @@
 const connection = require('../database/config/connection');
+const commentQueries = require('../database/queries');
 const {createError} = require('../errors/customError');
+
+// Get all comments for a post
 const getPostComments = async (req, res) => {
   const {postId} = req.params;
 
-  const comments = await connection.query(
-    'SELECT comments.body, comments.created_at, users.username FROM comments JOIN users ON users.id = comments.user_id WHERE post_id = $1',
-    [postId]
-  );
+  const comments = await connection.query(commentQueries.getPostComments, [postId]);
 
   res.status(200).json(comments.rows);
 };
@@ -20,10 +20,7 @@ const createComment = async (req, res) => {
     throw createError('No body provided', 400);
   }
 
-  const comment = await connection.query(
-    'INSERT INTO comments (body, post_id, user_id) VALUES ($1, $2, $3) RETURNING *',
-    [body, postId, id]
-  );
+  const comment = await connection.query(commentQueries.createComment, [body, postId, id]);
 
   res.status(201).json(comment.rows[0]);
 };
@@ -31,10 +28,7 @@ const createComment = async (req, res) => {
 const getCommentsNumber = async (req, res) => {
   const {postId} = req.params;
 
-  const commentsNumber = await connection.query(
-    'SELECT COUNT(*) FROM comments WHERE post_id = $1',
-    [postId]
-  );
+  const commentsNumber = await connection.query(commentQueries.countComments, [postId]);
 
   res.status(200).json(commentsNumber.rows[0]);
 };

@@ -1,5 +1,7 @@
 const connection = require('../database/config/connection');
+const userQueries = require('../database/queries');
 
+// Get Logged in User Id
 const getUserId = (req, res, next) => {
   res.status(200).json({
     status: 'success',
@@ -7,17 +9,13 @@ const getUserId = (req, res, next) => {
   });
 };
 
+// Get User Info
 const userInfo = async (req, res, next) => {
   const {username} = req.params;
 
-  const userInfo = await connection.query(
-    'SELECT id, username FROM users WHERE username = $1',
-    [username]
-  );
+  const userInfo = await connection.query(userQueries.getUserInfo, [username]);
 
-  const userPosts = await connection.query('SELECT * FROM posts WHERE user_id = $1', [
-    userInfo.rows[0].id,
-  ]);
+  const userPosts = await connection.query(userQueries.getUserPosts, [userInfo.rows[0].id]);
 
   res.status(200).json({
     status: 'success',

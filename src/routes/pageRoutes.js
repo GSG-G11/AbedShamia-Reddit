@@ -3,6 +3,6 @@ const {getLoginPage, indexPage, userPage} = require('../controllers');
 const {loggedIn} = require('../middlewares');
 router.get('/', indexPage);
 router.get('/users/:username', userPage);
-router.get('/reddit/login', loggedIn, getLoginPage);
+router.get('/login', loggedIn, getLoginPage);
 
 module.exports = router;

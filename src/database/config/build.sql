@@ -1,6 +1,6 @@
 BEGIN;
 
-DROP TABLE IF EXISTS users, posts, votes CASCADE;
+DROP TABLE IF EXISTS users, posts, votes, comments CASCADE;
 DROP TYPE IF EXISTS vote_type CASCADE;
 
 CREATE TYPE vote_type AS ENUM ('up', 'down', 'none');

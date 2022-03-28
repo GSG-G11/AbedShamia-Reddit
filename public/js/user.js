@@ -16,7 +16,7 @@ fetch('/api/auth/login/user').then(res => {
     signUpBtn.innerText = 'Sign Up / Login';
     signUpBtn.classList.add('logout-btn');
     signUpBtn.addEventListener('click', e => {
-      window.location.href = '/reddit/login';
+      window.location.href = '/login';
     });
     rightNav.appendChild(signUpBtn);
   }
@@ -35,7 +35,7 @@ fetch('/api/auth/login/user').then(res => {
         .then(res => res.json())
         .then(result => {
           if (result.status) {
-            window.location.href = '/reddit/login';
+            window.location.href = '/login';
           }
         });
     });

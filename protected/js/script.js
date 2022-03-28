@@ -20,7 +20,7 @@ fetch('/api/auth/login/user').then(res => {
     signUpBtn.innerText = 'Sign Up / Login';
     signUpBtn.classList.add('logout-btn');
     signUpBtn.addEventListener('click', e => {
-      window.location.href = '/reddit/login';
+      window.location.href = '/login';
     });
     rightNav.appendChild(signUpBtn);
   } else {

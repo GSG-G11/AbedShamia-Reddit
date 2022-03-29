@@ -8,6 +8,12 @@ const userVisited = document.querySelectorAll('.uservisited');
 
 const user = window.location.pathname.split('/')[2];
 
+fetch(`/api/v1/users/${user}`)
+  .then(res => res.json())
+  .catch(err => {
+    window.location.href = '/404';
+  });
+
 fetch('/api/auth/login/user').then(res => {
   if (res.status === 401) {
     logoutBtn.style.display = 'none';

@@ -17,12 +17,14 @@ app.use(cors());
 app.use(compression());
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
-app.use(express.static('public'));
-app.use(express.static('protected'));
+app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use(express.static(path.join(__dirname, '..', 'protected')));
 app.use(router);
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', '..', 'public', '404.html'));
-});
-app.use(errorHandler);
 
+app.use(notFoundError);
+
+app.use(errorHandler);
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', '404.html'));
+});
 module.exports = app;

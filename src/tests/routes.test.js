@@ -22,11 +22,11 @@ test('Not registered user', done => {
   request(app)
     .post('/api/auth/login')
     .send({
-      username: 'abedaa',
+      username: 'abedassda',
       password: 'abed123',
     })
     .end((err, res) => {
-      expect(res.statusCode).toBe(404);
+      expect(res.statusCode).toBe(400);
       done();
     });
 });

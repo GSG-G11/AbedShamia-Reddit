@@ -23,7 +23,6 @@ app.use(router);
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'public', '404.html'));
 });
-app.use(notFoundError);
 app.use(errorHandler);
 
 module.exports = app;

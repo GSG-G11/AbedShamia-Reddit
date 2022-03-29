@@ -65,7 +65,7 @@ const loginUser = async (req, res) => {
   const user = await connection.query(userQueries.userExistLogIn, [username]);
 
   if (!user.rows[0]) {
-    throw createError('User does not exist, please sign up', 404);
+    throw createError('User does not exist, please sign up', 400);
   }
 
   // Check if password is correct

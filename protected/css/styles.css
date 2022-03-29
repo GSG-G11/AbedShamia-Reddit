@@ -540,3 +540,34 @@ textarea {
   color: #777;
   font-size: 0.8rem;
 }
+@media screen and (max-width: 928px) {
+  html {
+    font-size: 70%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  html {
+    font-size: 50%;
+  }
+}
+
+@media screen and (max-width: 551px) {
+  html {
+    font-size: 33%;
+  }
+}
+
+@media screen and (max-width: 420px) {
+  html {
+    font-size: 30%;
+  }
+
+  .container {
+    flex-direction: column;
+  }
+
+  .reddit-home {
+    width: 50rem;
+  }
+}

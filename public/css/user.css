@@ -368,3 +368,35 @@ textarea {
   height: 100vh;
   background-color: #fff;
 }
+
+@media screen and (max-width: 928px) {
+  html {
+    font-size: 70%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  html {
+    font-size: 50%;
+  }
+}
+
+@media screen and (max-width: 551px) {
+  html {
+    font-size: 33%;
+  }
+}
+
+@media screen and (max-width: 420px) {
+  html {
+    font-size: 30%;
+  }
+
+  .container {
+    flex-direction: column-reverse;
+  }
+
+  .reddit-home {
+    width: 50rem;
+  }
+}

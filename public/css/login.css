@@ -133,3 +133,21 @@ header img {
   color: red;
   font-size: 0.9rem;
 }
+
+@media screen and (max-width: 768px) {
+  html {
+    font-size: 60%;
+  }
+}
+
+@media screen and (max-width: 551px) {
+  html {
+    font-size: 45%;
+  }
+}
+
+@media screen and (max-width: 420px) {
+  html {
+    font-size: 33%;
+  }
+}

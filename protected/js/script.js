@@ -6,6 +6,7 @@ const closeModalBtn = document.querySelector('.close-btn');
 const postsContainer = document.querySelector('.reddit-posts');
 const profileName = document.querySelector('.profile-name');
 const rightNav = document.querySelector('.right-nav');
+const form = document.getElementById('form');
 
 const submitBtn = document.querySelector('.submit-btn');
 
@@ -57,18 +58,22 @@ document.addEventListener('click', e => {
 });
 
 /////////// Get Posts ///////////
-fetch('/api/v1/posts')
-  .then(res => res.json())
-  .then(({posts}) =>
-    posts.map(post => {
-      const createdPost = postTemplate(post);
-      getPostComments(
-        createdPost.dataset.id,
-        createdPost.querySelector('.comments-section'),
-        post
-      );
-    })
-  );
+function getPosts() {
+  fetch('/api/v1/posts')
+    .then(res => res.json())
+    .then(({posts}) =>
+      posts.map(post => {
+        const createdPost = postTemplate(post);
+        getPostComments(
+          createdPost.dataset.id,
+          createdPost.querySelector('.comments-section'),
+          post
+        );
+      })
+    );
+}
+
+getPosts();
 
 //////////////////////////////// Post  ////////////////////////////////
 function postTemplate(post) {
@@ -172,6 +177,16 @@ function postTemplate(post) {
   postBody.innerText = post.body;
   redditPost.appendChild(postBody);
 
+  if (post.image_url) {
+    const postImg = document.createElement('img');
+    postImg.src = post.image_url.replace('protected', '');
+    postImg.style.width = '100%';
+    postImg.style.padding = '10px';
+    postImg.style.paddingRight = '25px';
+
+    redditPost.appendChild(postImg);
+  }
+
   postCreatedBy(post.id, usernameLink, postedBy, userImg, dateCreated);
 
   const commentBar = document.createElement('div');
@@ -263,34 +278,45 @@ function openPostModal(element) {
   });
 }
 
-submitBtn.addEventListener('click', e => {
+form.addEventListener('submit', e => {
+  e.preventDefault();
   const title = document.querySelector('input[name="title"]');
   const body = document.querySelector('textarea[name="body"]');
+  const image = document.getElementById('custom-file-upload').files[0];
 
-  const titleValue = title.value;
-  const bodyValue = body.value;
+  // Upload Image
 
-  if (!titleValue.trim() || !bodyValue.trim()) {
-    alert('Please fill in all fields');
+  // const titleValue = title.value;
+  // const bodyValue = body.value;
+  // const imageValue = image.name;
+  const formData = new FormData();
+  formData.append('title', title.value);
+  formData.append('body', body.value);
+  formData.append('image', image);
+
+  if (title.value.trim() === '' || body.value.trim() === '') {
+    alert('Please fill out all fields');
     return;
   }
 
+  // if (!titleValue.trim() || !bodyValue.trim()) {
+  //   alert('Please fill in all fields');
+  //   return;
+  // }
+
+  for (const [key, value] of formData.entries()) {
+    console.log(key, value);
+  }
   fetch('/api/v1/posts', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      title: titleValue,
-      body: bodyValue,
-    }),
+    body: formData,
   })
-    .then(res => res.json())
-    .then(result => {
-      if (result.status) {
-        window.location.reload();
-      }
-    });
+    .then(res => console.log(res))
+    .catch(err => console.log(err));
+
+  postsContainer.innerHTML = '';
+  getPosts();
+  closeModalBtn.click();
 });
 
 //////////////// Post Upvote/Downvote  ////////////////////////////////

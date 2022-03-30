@@ -36,6 +36,7 @@
             <button class="close-btn">&times;</button>
           </div>
           <div class="modal-body">
+            <form method="post" enctype="multipart/form-data" id="form">
               <div class="form-group">
                 <label for="title">Title</label>
                 <input type="text" name="title" id="title" placeholder="Title" />
@@ -44,7 +45,13 @@
                 <label for="body">Body</label>
                 <textarea name="body" id="body" cols="30" rows="10" placeholder="Body"></textarea>
               </div>
-                <button type="submit" name="submit" id="submit" class="submit-btn">Submit</button>
+              <div class="form-group">
+                <label for="custom-file-upload">Upload Image</label>
+                <input type="file" id="custom-file-upload" name="image" />
+              </div>
+              <button type="submit" name="submit" id="submit" class="submit-btn">Submit</button>
+              </form>
+             
           </div>
         </div>
         </div>

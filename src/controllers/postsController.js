@@ -2,6 +2,9 @@ const connection = require('../database/config/connection');
 const postQueries = require('../database/queries');
 const {createError} = require('../errors/customError');
 const Joi = require('joi');
+const multer = require('multer');
+const fs = require('fs');
+
 const getAllPosts = async (req, res) => {
   // get all posts and order them by votes DESC
   const posts = await connection.query(postQueries.getAllPosts);
@@ -17,25 +20,36 @@ const getAllPosts = async (req, res) => {
 };
 
 const createPost = async (req, res) => {
-  const {title, body} = req.body;
-  const user_id = req.user.id;
-
-  const schema = Joi.object({
-    title: Joi.string().required(),
-    body: Joi.string().required(),
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      if (!fs.existsSync('./protected/images/posts')) {
+        fs.mkdirSync('./protected/images/posts');
+      }
+      cb(null, './protected/images/posts');
+    },
+    filename: (req, file, cb) => {
+      cb(null, Date.now() + '-' + file.originalname);
+    },
   });
 
-  try {
-    const {error} = await schema.validateAsync({title, body});
-  } catch (error) {
-    throw createError('Invalid title or body', 400);
-  }
+  const upload = multer({storage}).single('image');
 
-  const post = await connection.query(postQueries.createPost, [title, body, user_id]);
+  upload(req, res, async err => {
+    if (err) {
+      throw createError(err, 400);
+    }
 
-  res.status(201).json({
-    status: 'success',
-    post: post.rows[0],
+    const {title, body} = req.body;
+
+    const {id} = req.user;
+    const path = req.file ? req.file.path : null;
+    const post = await connection.query(postQueries.createPost, [title, body, id, path]);
+
+    res.status(201).json({
+      status: 'success',
+      post: post.rows[0],
+    });
+    console.log(post.rows[0]);
   });
 };
 

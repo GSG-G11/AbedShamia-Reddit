@@ -73,8 +73,6 @@ function getPosts() {
     );
 }
 
-getPosts();
-
 //////////////////////////////// Post  ////////////////////////////////
 function postTemplate(post) {
   const redditCard = document.createElement('div');
@@ -299,24 +297,41 @@ form.addEventListener('submit', e => {
     return;
   }
 
+  // Check image type
+  const imgTypes = [
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'image/jpg',
+    'image/webp',
+    'image/svg',
+    'image/bmp',
+    'image/tiff',
+    'image/x-icon',
+  ];
+
+  if (image) {
+    if (!imgTypes.includes(image.type)) {
+      alert('Please upload a valid image');
+      return;
+    }
+  }
+
   // if (!titleValue.trim() || !bodyValue.trim()) {
   //   alert('Please fill in all fields');
   //   return;
   // }
 
-  for (const [key, value] of formData.entries()) {
-    console.log(key, value);
-  }
   fetch('/api/v1/posts', {
     method: 'POST',
     body: formData,
-  })
-    .then(res => console.log(res))
-    .catch(err => console.log(err));
+  });
 
   postsContainer.innerHTML = '';
-  getPosts();
-  closeModalBtn.click();
+  setTimeout(() => {
+    getPosts();
+    closeModalBtn.click();
+  }, 500);
 });
 
 //////////////// Post Upvote/Downvote  ////////////////////////////////
@@ -488,3 +503,5 @@ function postCreatedBy(id, usernameLink, postedBy, userImg, dateCreated) {
       }
     });
 }
+
+getPosts();

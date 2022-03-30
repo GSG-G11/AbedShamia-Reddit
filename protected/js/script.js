@@ -62,14 +62,16 @@ function getPosts() {
   fetch('/api/v1/posts')
     .then(res => res.json())
     .then(({posts}) =>
-      posts.map(post => {
-        const createdPost = postTemplate(post);
-        getPostComments(
-          createdPost.dataset.id,
-          createdPost.querySelector('.comments-section'),
-          post
-        );
-      })
+      posts
+        .sort((a, b) => +b.total_votes - +a.total_votes)
+        .map(post => {
+          const createdPost = postTemplate(post);
+          getPostComments(
+            createdPost.dataset.id,
+            createdPost.querySelector('.comments-section'),
+            post
+          );
+        })
     );
 }
 

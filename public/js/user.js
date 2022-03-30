@@ -154,6 +154,16 @@ function postTemplate(post) {
 
   postCreatedBy(post.id, usernameLink, postedBy, userImg, dateCreated);
 
+  if (post.image_url) {
+    const postImg = document.createElement('img');
+    postImg.src = post.image_url.replace('protected', '');
+    postImg.style.width = '100%';
+    postImg.style.padding = '10px';
+    postImg.style.paddingRight = '25px';
+
+    redditPost.appendChild(postImg);
+  }
+
   const commentBar = document.createElement('div');
   commentBar.classList.add('comment-bar');
   redditPost.appendChild(commentBar);
